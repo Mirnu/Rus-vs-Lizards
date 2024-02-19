@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class BootStrap : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [HideInInspector] public JsonConfig Config;
+    [HideInInspector] public DialogModel DialogModel;
+    [HideInInspector] public DialogView DialogView;
+
+    [SerializeField] private TextAsset _startCharacteristicsFile;
+    [SerializeField] private TextAsset _gameConfigFile;
+
+    private void Awake()
     {
-        
+        initConfig();
+        DialogView = new DialogView();
+        DialogModel = new DialogModel(DialogView, Config.GameNodes.nodes, Config);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void initConfig()
     {
-        
+        Config = new JsonConfig(_startCharacteristicsFile, _gameConfigFile);
+        Config.Initialize();
     }
 }
