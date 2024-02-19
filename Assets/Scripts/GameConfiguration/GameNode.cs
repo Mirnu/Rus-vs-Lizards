@@ -2,7 +2,6 @@
 
 namespace GameConfiguration
 {
-    // Задание: добавить нужные поля после анализа структуры JSON файла
     [System.Serializable]
     public class GameNodes
     {

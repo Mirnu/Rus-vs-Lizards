@@ -1,11 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using GameConfiguration;
+using Unity.VisualScripting;
 
 public class DialogPresenter
 {
-    public void OptionSelected()
+    private DialogModel _dialogModel;
+
+    public DialogPresenter(DialogModel dialogModel)
     {
-        
+        _dialogModel = dialogModel;
+    }
+
+    public void Start()
+    {
+        OptionSelected(_dialogModel.CurrentDialog.variants[0]);
+    }
+
+    public void OptionSelected(DialogVariant variant)
+    {
+        _dialogModel.ChangeDialog(variant.to);
     }
 }

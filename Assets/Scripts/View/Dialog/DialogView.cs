@@ -14,11 +14,18 @@ public class DialogView : MonoBehaviour
     [SerializeField] private GameObject _answerButton;
 
     [Header("Config")]
-    [SerializeField] private int _offset = 140;
+    [SerializeField] private int _offset = 2;
 
-    private Dialog _dialog;
+    private DialogNode _dialog;
+    private DialogPresenter _presenter;
+    private List<GameObject> _buttons = new List<GameObject>();
 
-    public void Display(Dialog dialog)
+    public void Init(DialogPresenter presenter)
+    {
+        _presenter = presenter;
+    }
+
+    public void Display(DialogNode dialog)
     {
         _dialog = dialog;
         changeTitle();
@@ -27,21 +34,24 @@ public class DialogView : MonoBehaviour
 
     private void initButtons()
     {
-        for(int i = 0; i < _dialog.Variants.Count; i++)
+        _buttons.ForEach(button => Destroy(button));
+        _buttons.Clear();
+        for(int i = 0; i < _dialog.variants.Count; i++)
         {
-            instantiateButton(i, _dialog.Variants[i]);
+            instantiateButton(i, _dialog.variants[i]);
         }
     }
 
     private void onClick(DialogVariant variant)
     {
-        
+        _presenter.OptionSelected(variant);
     }
 
     private void instantiateButton(int id, DialogVariant dialogVariant)
     {
         GameObject button = Instantiate(_answerButton, _answerButtons.transform);
         button.transform.position -= Vector3.up * id * _offset;
+        _buttons.Add(button);
         
         SelectionButton selectionButton = button.GetComponent<SelectionButton>();
         selectionButton.Init(dialogVariant, onClick);
@@ -49,20 +59,7 @@ public class DialogView : MonoBehaviour
 
     private void changeTitle()
     {
-        _titleLabel.text = _dialog.title;
+        _titleLabel.text = _dialog.text;
     }
   
-}
-
-public struct Dialog
-{
-    public int id;
-    public string title;
-    public List<DialogVariant> Variants;
-}
-
-public struct DialogVariant
-{
-    public int id;
-    public string text;
 }

@@ -4,23 +4,32 @@ using UnityEngine;
 
 public class BootStrap : MonoBehaviour
 {
-    [HideInInspector] public JsonConfig Config;
-    [HideInInspector] public DialogModel DialogModel;
-    [HideInInspector] public DialogView DialogView;
+    private JsonConfig _config;
+    private DialogModel _dialogModel;
+    private DialogPresenter _dialogPresenter;
 
+    [Header("Config")]
     [SerializeField] private TextAsset _startCharacteristicsFile;
     [SerializeField] private TextAsset _gameConfigFile;
+
+    [Header("UI")]
+    [SerializeField] private DialogView _dialogView;
 
     private void Awake()
     {
         initConfig();
-        DialogView = new DialogView();
-        DialogModel = new DialogModel(DialogView, Config.GameNodes.nodes, Config);
+        initDialog();
     }
-
     private void initConfig()
     {
-        Config = new JsonConfig(_startCharacteristicsFile, _gameConfigFile);
-        Config.Initialize();
+        _config = new JsonConfig(_startCharacteristicsFile, _gameConfigFile);
+        _config.Initialize();
+    }
+    private void initDialog()
+    {
+        _dialogModel = new DialogModel(_dialogView, _config);
+        _dialogPresenter = new DialogPresenter(_dialogModel);
+        _dialogView.Init(_dialogPresenter);
+        _dialogPresenter.Start();
     }
 }
